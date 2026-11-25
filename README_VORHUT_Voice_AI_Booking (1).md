@@ -68,11 +68,18 @@ response.
 
 All appointment times use **Africa/Lagos**.
 
+Video Demo
+
+https://youtu.be/ACBy6mk9njU
+
 ------------------------------------------------------------------------
 
 ## Workflow 1: Main booking workflow
 
 **Workflow name:** `VORHUT Voice AI Consultation Booking`
+
+<img width="1366" height="723" alt="vorhut 1" src="https://github.com/user-attachments/assets/b74e03ee-47a3-4626-a93a-3941955efe94" />
+
 
 ### Entry points
 
@@ -140,6 +147,9 @@ returns `ok: true` and a successful status.
 **Workflow name:**
 `VORHUT Post-Booking Notifications (With Failure Alerts)`
 
+<img width="1366" height="677" alt="vorhut 5" src="https://github.com/user-attachments/assets/4c0e0591-05bf-4f48-9fd1-a19ed89be89f" />
+
+
 This is a separate n8n subworkflow called after a new booking is
 confirmed.
 
@@ -174,11 +184,22 @@ The notification workflow receives booking information such as name,
 email, phone, consultation type, clothing needs, appointment start/end,
 booking ID, event ID, and status.
 
+<img width="881" height="648" alt="vorhut 2" src="https://github.com/user-attachments/assets/b0bf6d9c-f718-425d-ae8f-44abcbc82a31" />
+
+<img width="1366" height="721" alt="vorhut" src="https://github.com/user-attachments/assets/25f23a59-ed3d-4cb9-aa64-60a2b5f714bb" />
+
+<img width="1366" height="666" alt="vorhut 3" src="https://github.com/user-attachments/assets/8743a038-25e1-4a15-8e63-bf04ba518b2c" />
+
+<img width="1366" height="669" alt="vorhut 12" src="https://github.com/user-attachments/assets/323109d9-5a0f-4d21-ac77-d3e9caaf8ac2" />
+
 ------------------------------------------------------------------------
 
 ## Workflow 3: Global workflow error handler
 
 **Workflow name:** `VORHUT Error Handler`
+
+<img width="1366" height="680" alt="vorhut 6" src="https://github.com/user-attachments/assets/d5eadb1a-9bed-4c10-b4d1-e65975e3ee76" />
+
 
 This workflow is separate from the post-booking notification
 subworkflow.
@@ -217,6 +238,8 @@ assistant
 ``` text
 Hello, thank you for calling VORHUT! I'm Cleo, your clothing consultation assistant. How can I help you today?
 ```
+<img width="1366" height="686" alt="vorhut 7" src="https://github.com/user-attachments/assets/c8946ec3-f1c5-4395-805a-6d03b9de314e" />
+
 
 ### Voice configuration — Savannah
 
@@ -224,6 +247,7 @@ Hello, thank you for calling VORHUT! I'm Cleo, your clothing consultation assist
 - **Purpose:** Cleo's spoken voice for the VORHUT phone assistant.
 - Savannah is the selected voice; the assistant's greeting, confirmations, booking announcements, and closing are spoken in this voice.
 - The voice selection is separate from the AI model and the transcriber: the voice produces Cleo's audio, the AI model generates her response, and the transcriber converts the caller's speech into text.
+
 
 ### AI model configuration
 
@@ -250,6 +274,9 @@ The project used a Vapi-configured transcriber, but the exact provider/model nam
 
 ### Start Speaking Plan and turn-taking
 
+<img width="1366" height="721" alt="vorhut 8" src="https://github.com/user-attachments/assets/2bcdc4bd-5b77-4232-8467-2461ef5867ed" />
+
+
 - **Start Speaking Plan wait:** `5 seconds`
 - This wait was increased to give Cleo more time before beginning a response after the caller pauses.
 - The change was made because Cleo sometimes treated a short pause as the end of the caller's turn and started speaking too early.
@@ -257,12 +284,19 @@ The project used a Vapi-configured transcriber, but the exact provider/model nam
 
 The Stop Speaking Plan and the other advanced turn-taking settings were left at the configured values during the later troubleshooting; they were not changed as part of the final 5-second Start Speaking Plan adjustment. Keep those settings as configured in the final assistant rather than changing them without a targeted test.
 
+<img width="1366" height="721" alt="vorhut 9" src="https://github.com/user-attachments/assets/80721257-34c3-4c11-a956-279e238587d6" />
+
+
 ### Other advanced voice settings and call ending
 
 - The advanced voice/turn-taking configuration was retained during the final adjustment; the specific change recorded was the Start Speaking Plan wait to 5 seconds.
 - **End Call Phrase:** `Have a lovely day`
 - Cleo should finish the full closing sentence and use the phrase to end the call.
 - The Hang Up / EndCall tool was not used to force the call to end; the prompt directs Cleo to finish naturally with the configured phrase.
+
+<img width="1366" height="676" alt="vorhut 10" src="https://github.com/user-attachments/assets/33388b52-3561-4291-9528-d8ead7442f60" />
+
+<img width="1366" height="687" alt="vorhut 11" src="https://github.com/user-attachments/assets/b98d2220-8818-41cf-bad3-e6a8d55ac636" />
 
 ### Knowledge base
 
@@ -349,6 +383,9 @@ arguments in Vapi call logs when investigating an email mismatch.
 ------------------------------------------------------------------------
 
 ## Database and idempotency
+
+<img width="1366" height="721" alt="vorhut 4" src="https://github.com/user-attachments/assets/ac15c333-2716-48e2-ad58-9fb9f13e7425" />
+
 
 The booking workflow uses Supabase/Postgres, including the table:
 
