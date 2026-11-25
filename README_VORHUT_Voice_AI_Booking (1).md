@@ -68,13 +68,9 @@ response.
 
 All appointment times use **Africa/Lagos**.
 
-Video Demo
-
-https://youtu.be/ACBy6mk9njU
-
 ## Video Demo
 
-[![Watch my video](https://img.youtube.com/vi/ACBy6mk9nJU/0.jpg)](https://youtu.be/ACBy6mk9nJU)
+[![Watch my video](https://img.youtube.com/vi/ACBy6mk9njU/0.jpg)](https://youtu.be/ACBy6mk9njU)
 
 ------------------------------------------------------------------------
 
