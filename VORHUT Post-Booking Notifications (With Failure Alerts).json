@@ -1,0 +1,290 @@
+{
+  "name": "VORHUT Post-Booking Notifications (With Failure Alerts)",
+  "nodes": [
+    {
+      "parameters": {
+        "content": " This workflow sends the customer confirmation email, appends the booking to Google Sheets, and sends the owner a Telegram booking notification. These three notifications run as separate branches. If Gmail, Google Sheets, or the Telegram booking notification fails, the corresponding error output sends a failure alert to slack",
+        "height": 134,
+        "width": 520
+      },
+      "id": "3f93d643-af7c-401d-8738-2960a736d996",
+      "name": "READ ME - Setup",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "id": "db14c843-8e08-40fc-9bf8-461c105638d6",
+      "name": "When Called by Main Booking Workflow",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        304,
+        256
+      ]
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.email }}",
+        "subject": "VORHUT – Your Clothing Consultation Is Confirmed",
+        "message": "=<p>Hi {{ $json.customerName }},</p><p>Your clothing consultation with <strong>VORHUT</strong> has been confirmed!</p><p><strong>Consultation:</strong> {{ $json.consultationType }}</p><p><strong>Date and time:</strong>{{ $json.startTime }}</p><p><strong>Your clothing needs:</strong> {{ $json.clothingNeeds }}</p><p>We look forward to helping you find your perfect look.</p><p>Best regards,<br><strong>VORHUT Team</strong></p>",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "id": "a037f532-0cb5-4eaf-80e4-fe7c76158e6f",
+      "name": "Gmail - Customer Confirmation",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        528,
+        64
+      ],
+      "webhookId": "69ab07ed-d7bf-43e4-8811-3d3c2e517cd6",
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "",
+          "mode": "list",
+          "cachedResultName": "",
+          "cachedResultUrl": ""
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "",
+          "mode": "list",
+          "cachedResultName": "",
+          "cachedResultUrl": ""
+        }
+      },
+      "id": "a196e4d0-8864-4feb-932a-adcbce900d47",
+      "name": "Google Sheets - Log Booking",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        528,
+        256
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "chatId": "6397475915",
+        "text": "=🎉 *NEW VORHUT CONSULTATION BOOKING*\n\nA new clothing consultation has been confirmed.\n\n*Customer:* {{ $json.customerName }}\n*Email:* {{ $json.email }}\n*Phone:* {{ $json.phone || 'Not provided' }}\n*Consultation:* {{ $json.consultationType }}\n*Clothing needs:* {{ $json.clothingNeeds }}\n*Appointment:* {{ $json.startTime }}\n*Booking ID:* {{ $json.bookingId }}\n\nPlease check the VORHUT calendar for details.",
+        "additionalFields": {
+          "appendAttribution": false,
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "2f918825-98b8-41fa-a78a-c8d4df976a79",
+      "name": "Telegram - Notify Owner",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        528,
+        448
+      ],
+      "webhookId": "025f9c6a-e610-4d9e-8b72-c36a404e5491",
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "select": "user",
+        "user": {
+          "__rl": true,
+          "value": "U05J13XBA1E",
+          "mode": "list",
+          "cachedResultName": "Debeke Hope (@debekehope)"
+        },
+        "text": "=⚠️ VORHUT NOTIFICATION FAILURE\\n\\nFailed step: Gmail customer confirmation\\nBooking ID: {{ $('When Called by Main Booking Workflow').first().json.bookingId }}\\nCustomer: {{ $('When Called by Main Booking Workflow').first().json.name }}\\nError: {{ $json.error?.message || $json.message || JSON.stringify($json) }}",
+        "otherOptions": {}
+      },
+      "id": "7b924c15-c787-440d-95fb-182773a1b9ab",
+      "name": "SLACK ALERT - Gmail failed",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.2,
+      "position": [
+        752,
+        64
+      ],
+      "webhookId": "1a8e4e2c-791f-4fe6-af3a-663257d2d880",
+      "credentials": {
+        "slackOAuth2Api": {
+          "id": "4Fgq0hEEfHrSZOWj",
+          "name": "Slack account"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "select": "user",
+        "user": {
+          "__rl": true,
+          "value": "U05J13XBA1E",
+          "mode": "list",
+          "cachedResultName": "Debeke Hope (@debekehope)"
+        },
+        "text": "=⚠️ VORHUT NOTIFICATION FAILURE\\n\\nFailed step: Google Sheets booking log\\nBooking ID: {{ $('When Called by Main Booking Workflow').first().json.bookingId }}\\nCustomer: {{ $('When Called by Main Booking Workflow').first().json.name }}\\nError: {{ $json.error?.message || $json.message || JSON.stringify($json) }}",
+        "otherOptions": {}
+      },
+      "id": "0cadca4e-2480-49c5-933b-89c64e3e7813",
+      "name": "SLACK ALERT - Google Sheets failed",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.2,
+      "position": [
+        752,
+        256
+      ],
+      "webhookId": "c67a7030-bf8e-4c43-8685-f3faf279649d",
+      "credentials": {
+        "slackOAuth2Api": {
+          "id": "4Fgq0hEEfHrSZOWj",
+          "name": "Slack account"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "select": "user",
+        "user": {
+          "__rl": true,
+          "value": "U05J13XBA1E",
+          "mode": "list",
+          "cachedResultName": "Debeke Hope (@debekehope)"
+        },
+        "text": "=⚠️ VORHUT NOTIFICATION FAILURE\\n\\nFailed step: Telegram owner booking notification\\nBooking ID: {{ $('When Called by Main Booking Workflow').first().json.bookingId }}\\nCustomer: {{ $('When Called by Main Booking Workflow').first().json.name }}\\nError: {{ $json.error?.message || $json.message || JSON.stringify($json) }}",
+        "otherOptions": {}
+      },
+      "id": "09744718-f3ef-4701-a795-d68aa6d75112",
+      "name": "SLACK ALERT - Telegram booking message failed",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.2,
+      "position": [
+        752,
+        448
+      ],
+      "webhookId": "e3bd8d68-6136-4e4f-a209-f94122acb4fd",
+      "credentials": {
+        "slackOAuth2Api": {
+          "id": "4Fgq0hEEfHrSZOWj",
+          "name": "Slack account"
+        }
+      },
+      "onError": "continueErrorOutput"
+    }
+  ],
+  "pinData": {
+    "When Called by Main Booking Workflow": [
+      {
+        "json": {
+          "ok": true,
+          "status": "booked",
+          "message": "Your VORHUT clothing consultation has been confirmed.",
+          "bookingId": "19",
+          "customerName": "Hope",
+          "email": "debekehope@gmail.com",
+          "phone": null,
+          "consultationType": "personal styling",
+          "clothingNeeds": "discuss everything in general for my baby shower",
+          "startTime": "2026-11-26T15:00:00+01:00",
+          "endTime": "2026-11-26T14:30:00.000Z",
+          "eventId": "j1op89lf0hq5nv76bpiajtncog"
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ]
+  },
+  "connections": {
+    "When Called by Main Booking Workflow": {
+      "main": [
+        [
+          {
+            "node": "Gmail - Customer Confirmation",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Google Sheets - Log Booking",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Telegram - Notify Owner",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail - Customer Confirmation": {
+      "main": [
+        [],
+        [
+          {
+            "node": "SLACK ALERT - Gmail failed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets - Log Booking": {
+      "main": [
+        [],
+        [
+          {
+            "node": "SLACK ALERT - Google Sheets failed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram - Notify Owner": {
+      "main": [
+        [],
+        [
+          {
+            "node": "SLACK ALERT - Telegram booking message failed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "timeSavedMode": "fixed",
+    "errorWorkflow": "RfaA8dOxplVIF8KI",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "versionId": "a1190d1f-9272-4cbb-992c-05c02283d7a1",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "036a1da759e3c79083d83fed89aff8b3be5ebaaadf1eaba2d19665b5628c8466"
+  },
+  "nodeGroups": [],
+  "id": "ba3aE8aHN7r7yGml",
+  "tags": []
+}

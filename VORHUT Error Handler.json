@@ -1,0 +1,66 @@
+{
+  "name": "VORHUT Error Handler",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "87c280ce-b6e8-4100-9aac-ed8997425e6c",
+      "name": "Error Trigger",
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "select": "user",
+        "user": {
+          "__rl": true,
+          "value": "",
+          "mode": "list",
+          "cachedResultName": "",
+          "cachedResultUrl": ""
+        },
+        "text": "=🚨 *VORHUT WORKFLOW ERROR*\n\n*Workflow:* {{ $json.workflow.name || 'Unknown workflow' }}\n*Failed node:* {{ $json.execution.lastNodeExecuted || 'Unknown node' }}\n*Error:* {{ $json.execution.error.message || JSON.stringify($json.execution.error) || 'No error message provided' }}\n*Execution ID:* {{ $json.execution.id || 'Unavailable' }}\n*Mode:* {{ $json.execution.mode || 'Unknown' }}\n*Execution link:* {{ $json.execution.url || 'Unavailable' }}",
+        "otherOptions": {}
+      },
+      "id": "de9d9a24-a8ca-4320-aca6-60b8edfe403d",
+      "name": "Slack - Alert on Workflow Failure",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.2,
+      "position": [
+        256,
+        0
+      ],
+      "webhookId": "96983382-de9a-475d-8d2b-bfd7dee50c3f"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Error Trigger": {
+      "main": [
+        [
+          {
+            "node": "Slack - Alert on Workflow Failure",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "48d11ef2-8b1f-4cfb-aa0d-78eec5c6851b",
+  "meta": {
+    "instanceId": "036a1da759e3c79083d83fed89aff8b3be5ebaaadf1eaba2d19665b5628c8466"
+  },
+  "nodeGroups": [],
+  "id": "RfaA8dOxplVIF8KI",
+  "tags": []
+}
