@@ -548,12 +548,12 @@
         "headerParameters": {
           "parameters": [
             {
-              "name": "apikey",
-              "value": "sb_secret_FLJPcaP9JD8LAKnz8uVMZw_VPSW0F1d"
+              "name": 
+              "value": 
             },
             {
-              "name": "Authorization",
-              "value": "Bearer sb_secret_FLJPcaP9JD8LAKnz8uVMZw_VPSW0F1d"
+              "name":
+              "value": 
             },
             {
               "name": "Accept",
